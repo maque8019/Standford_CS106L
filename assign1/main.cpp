@@ -25,9 +25,9 @@ const std::string COURSES_NOT_OFFERED_PATH = "student_output/courses_not_offered
  * Hint: Remember what types C++ streams work with?!
  */
 struct Course {
-  /* STUDENT TODO */ title;
-  /* STUDENT TODO */ number_of_units;
-  /* STUDENT TODO */ quarter;
+	/* STUDENT TODO */std::string  title;
+	/* STUDENT TODO */std::string  number_of_units;
+ 	 /* STUDENT TODO */std::string quarter;
 };
 
 /**
@@ -58,8 +58,24 @@ struct Course {
  * @param filename The name of the file to parse.
  * @param courses  A vector of courses to populate.
  */
-void parse_csv(std::string filename, std::vector<Course> courses) {
+void parse_csv(std::string filename, std::vector<Course> &courses) {
   /* (STUDENT TODO) Your code goes here... */
+	std::ifstream ifs(filename);
+	if(ifs.is_open()){
+		std::string line;
+		std::getline(ifs,line);
+		Course course;
+		while(std::getline(ifs,line)){
+			std::vector<std::string> course_v=split(line,',');
+			course.title=course_v[0];
+			course.number_of_units=course_v[1];
+			course.quarter=course_v[2];
+			courses.push_back(course);
+		}
+	}
+	ifs.close();
+
+
 }
 
 /**
@@ -80,8 +96,20 @@ void parse_csv(std::string filename, std::vector<Course> courses) {
  * @param all_courses A vector of all courses gotten by calling `parse_csv`.
  *                    This vector will be modified by removing all offered courses.
  */
-void write_courses_offered(std::vector<Course> all_courses) {
+void write_courses_offered(std::vector<Course> &all_courses) {
   /* (STUDENT TODO) Your code goes here... */
+	std::ofstream ofs(COURSES_OFFERED_PATH);
+	if(ofs.is_open()){
+		ofs<<"Title"<<","<<"Number of Units"<<","<<"Quarter"<<"\n";
+		for(size_t i=0;i<all_courses.size();){
+			if (all_courses[i].quarter!="null"){
+				ofs<<all_courses[i].title<<","<<all_courses[i].number_of_units<<","<<all_courses[i].quarter<<"\n";
+				all_courses.erase(all_courses.begin()+i);
+			}else{
+				i++;}
+		}
+	}
+	ofs.close();
 }
 
 /**
@@ -98,7 +126,19 @@ void write_courses_offered(std::vector<Course> all_courses) {
  * @param unlisted_courses A vector of courses that are not offered.
  */
 void write_courses_not_offered(std::vector<Course> unlisted_courses) {
-  /* (STUDENT TODO) Your code goes here... */
+  /* (STUDENT TODO) Your code goes here...*/
+   std::ofstream ofs(COURSES_NOT_OFFERED_PATH);
+        if(ofs.is_open()){
+                ofs<<"Title"<<","<<"Number of Units"<<","<<"Quarter"<<"\n";
+                for(size_t i=0;i<unlisted_courses.size();i++){
+                          ofs<<unlisted_courses[i].title<<","<<unlisted_courses[i].number_of_units<<","<<unlisted_courses[i].quarter<<"\n";
+                          
+                        
+                }
+        }
+        ofs.close();
+
+
 }
 
 int main() {
@@ -110,7 +150,7 @@ int main() {
 
   /* Uncomment for debugging... */
   // print_courses(courses);
-
+	
   write_courses_offered(courses);
   write_courses_not_offered(courses);
 
