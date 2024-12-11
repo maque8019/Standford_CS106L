@@ -16,7 +16,7 @@
 
 #include "utils.h"
 
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
+std::string kYourName = "Lionel Page"; // Don't forget to change this!
 
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
@@ -31,7 +31,21 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  */
 std::set<std::string> get_applicants(std::string filename) {
   // STUDENT TODO: Implement this function.
+  	std::set<std::string> get_applicants;
+	std::ifstream ifs(filename);
+	if(ifs.is_open()){
+		std::string line;
+		while(std::getline(ifs,line)){
+			get_applicants.insert(line);
+		}
+	}
+	return get_applicants;
 }
+char first_letter(std::string name){
+	char first_char=name[0];
+	return first_char;
+}
+
 
 /**
  * Takes in a set of student names by reference and returns a queue of names
@@ -43,6 +57,15 @@ std::set<std::string> get_applicants(std::string filename) {
  */
 std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
   // STUDENT TODO: Implement this function.
+  	std::queue<const std::string*> find_matches;
+	for (const auto& elem : students){
+		if(first_letter(name)==first_letter(elem)){
+			auto *px=&elem;
+			find_matches.push(px);
+		}
+	}
+	return find_matches;
+  	
 }
 
 /**
@@ -57,6 +80,34 @@ std::queue<const std::string*> find_matches(std::string name, std::set<std::stri
  */
 std::string get_match(std::queue<const std::string*>& matches) {
   // STUDENT TODO: Implement this function.
+  	std::string get_match;
+	if(matches.empty()){
+		std::cout<<"NO STUDENT FOUND."<<std::endl;
+	}
+	int max_count=0;
+	std::string result="";
+	while( !matches.empty()){
+		bool is_need=false;
+		std::string match = *matches.front();
+		matches.pop();
+		std::cout<<match<<std::endl;
+		int count = 0;
+		for( char c : match){
+			if(c==' '){
+				is_need=true;
+			}else if(c==match.at(0)){
+				count++;
+			}else if(is_need && c=='P'){
+				is_need=false;
+			}
+		}
+		
+		if(count>max_count && ! is_need){
+			max_count=count;
+			result=match;
+		}
+	}
+	return result;
 }
 
 /* #### Please don't modify this call to the autograder! #### */
